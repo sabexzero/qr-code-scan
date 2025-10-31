@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Распознавание Штрих-кодов</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<main class="main-container">
+
+    <!-- Левая панель с контентом -->
+    <div class="content-panel">
+        <div class="content-wrapper">
+            <header>
+                <h1>Распознавание Штрих-кода</h1>
+                <p class="subtitle">Загрузите изображение, чтобы мгновенно извлечь данные из QR, PDF417, DataMatrix и других кодов.</p>
+            </header>
+
+            <!-- Блок для результатов от Thymeleaf -->
+            <div id="result-area">
+                <!-- Успешный результат -->
+                <div th:if="${decodedText}" class="result success">
+                    <div class="result-icon">✓</div>
+                    <div class="result-content">
+                        <h3>Результат Распознавания:</h3>
+                        <pre th:text="${decodedText}"></pre>
+                        <a href="/" class="button-secondary">Распознать другой код</a>
+                    </div>
+                </div>
+
+                <!-- Ошибка -->
+                <div th:if="${error}" class="result error">
+                    <div class="result-icon">✕</div>
+                    <div class="result-content">
+                        <h3>Ошибка</h3>
+                        <p th:text="${error}"></p>
+                        <a href="/" class="button-secondary">Попробовать снова</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ИСПРАВЛЕННАЯ СТРОКА ЗДЕСЬ -->
+            <!-- Форма загрузки, будет показана, только если нет ни результата, ни ошибки -->
+            <form id="upload-form" method="POST" action="/upload" enctype="multipart/form-data" th:if="${decodedText == null and error == null}">
+                <!-- 1. Состояние загрузки -->
+                <div id="upload-state">
+                    <label for="imageFile" class="uploader">
+                        <div class="uploader-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                        </div>
+                        <p class="uploader-text">
+                            <strong>Кликните для выбора</strong> или перетащите файл
+                        </p>
+                        <p class="uploader-hint">Можно вставить из буфера обмена (Ctrl+V)</p>
+                    </label>
+                    <input type="file" name="imageFile" id="imageFile" accept="image/*" required>
+                </div>
+
+                <!-- 2. Состояние предпросмотра -->
+                <div id="preview-state" class="hidden">
+                    <div class="preview-wrapper">
+                        <img id="preview-image" src="" alt="Предпросмотр"/>
+                        <div class="preview-info">
+                            <span id="filename"></span>
+                            <button type="button" id="change-file-btn">Выбрать другой файл</button>
+                        </div>
+                    </div>
+                    <button type="submit" id="submit-btn" class="button-primary">Распознать Код</button>
+                </div>
+
+                <!-- 3. Состояние загрузки на сервер -->
+                <div id="loading-state" class="hidden">
+                    <div class="spinner"></div>
+                    <p>Распознавание...</p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Правая панель с иллюстрацией -->
+    <div class="illustration-panel">
+        <div class="illustration-content">
+            <svg class="illustration-svg" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+                <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#4e85ff"></stop><stop offset="100%" stop-color="#0052ff"></stop></linearGradient></defs>
+                <rect width="120" height="120" x="50" y="50" rx="10" fill="url(#g)"></rect><rect width="40" height="40" x="50" y="190" rx="5" fill="#e0e0e0"></rect><rect width="70" height="40" x="100" y="190" rx="5" fill="#e0e0e0"></rect><rect width="120" height="20" x="50" y="240" rx="5" fill="#e0e0e0"></rect>
+                <path d="M 220,50 L 350,50 L 350,180 L 220,180 Z" fill="none" stroke="url(#g)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M 220,220 L 350,220 L 350,350 L 220,350 Z" fill="#e0e0e0"></path><path d="M 230,230 L 340,230 L 340,340 L 230,340 Z" fill="white"></path>
+                <rect width="45" height="45" x="245" y="245" rx="5" fill="#333"></rect><rect width="45" height="15" x="245" y="300" rx="5" fill="#333"></rect><rect width="15" height="45" x="305" y="245" rx="5" fill="#333"></rect><rect width="45" height="45" x="275" y="275" rx="5" fill="#333"></rect>
+            </svg>
+            <h2>Надёжно и быстро</h2>
+            <p>Наша технология обеспечивает высокую точность распознавания для всех популярных форматов штрих-кодов.</p>
+        </div>
+    </div>
+</main>
+
+<script th:src="@{/js/script.js}"></script>
+</body>
+</html>
